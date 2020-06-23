@@ -21,7 +21,7 @@
         android:id="@+id/hybrid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginBottom="154dp"
         android:text="Hybrid"
         android:onClick="mapchangeButt"
@@ -32,10 +32,9 @@
         android:id="@+id/satelite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="17dp"
-        android:text="Satelite"
+        android:layout_marginEnd="15dp"
         android:onClick="mapchangeButt"
+        android:text="Satelite"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/hybrid" />
 
@@ -43,12 +42,21 @@
         android:id="@+id/terrain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="9dp"
-        android:layout_marginEnd="2dp"
-        android:text="Terrain"
         android:onClick="mapchangeButt"
+        android:text="Terrain"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/satelite"
-        app:layout_constraintTop_toBottomOf="@+id/satelite" />
+        app:layout_constraintTop_toBottomOf="@+id/satelite"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/cadastral"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="cadast"
+        android:onClick="mapchangeButt"
+        app:layout_constraintBottom_toTopOf="@+id/hybrid"
+        app:layout_constraintStart_toStartOf="@+id/hybrid" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

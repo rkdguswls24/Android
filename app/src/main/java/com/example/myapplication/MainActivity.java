@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.view.View;
 import com.naver.maps.geometry.LatLng;
@@ -20,6 +21,8 @@ public class MainActivity extends AppCompatActivity
     implements OnMapReadyCallback {
     NaverMap myMap;
     Toast msg =null;
+    private boolean clicked = false;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,27 +43,39 @@ public class MainActivity extends AppCompatActivity
         switch(v.getId())
         {
             case R.id.hybrid:
-                msg.cancel();
+                toastmsg("hybrid");
                 myMap.setMapType(NaverMap.MapType.Hybrid);
-                msg=Toast.makeText(this,"Hybrid",Toast.LENGTH_SHORT);
-                msg.show();
 
                 break;
             case R.id.satelite:
-                msg.cancel();
+                toastmsg("satelite");
                 myMap.setMapType(NaverMap.MapType.Satellite);
-                msg=Toast.makeText(this,"satelite",Toast.LENGTH_SHORT);
-                msg.show();
+
                 break;
             case R.id.terrain:
-                msg.cancel();
+                toastmsg("terrain");
                 myMap.setMapType(NaverMap.MapType.Terrain);
-                msg=Toast.makeText(this,"terrain",Toast.LENGTH_SHORT);
-                msg.show();
+
+                break;
+            case R.id.cadastral:
+                clicked = !clicked;
+                toastmsg("cadastral");
+                Button btn = (Button)v;
+                if(clicked)
+                    btn.setText("Off");
+                else
+                    btn.setText("cadast");
+                myMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_CADASTRAL,clicked);
+
                 break;
         }
     }
 
+    public void toastmsg(String str){
+        msg.cancel();
+        msg=Toast.makeText(this,str,Toast.LENGTH_SHORT);
+        msg.show();
+    }
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         this.myMap = naverMap;
