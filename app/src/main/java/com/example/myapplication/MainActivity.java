@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity
     private NaverMap myMap;
     Toast msg =null;
     private boolean clicked = false;
-    private boolean menulist=true;
+    private boolean menulist=false;
 
 
 
@@ -52,9 +52,10 @@ public class MainActivity extends AppCompatActivity
 
         linemenu = (LinearLayout)findViewById(R.id.linelayer);
         mode_btn = (Button)findViewById(R.id.mode);
+        linemenu.setVisibility(View.INVISIBLE);
         mode_btn.setOnClickListener(new Button.OnClickListener(){
            @Override
-           public void onClick(View view){
+           public void onClick(View v){
                if(menulist) {
                    menulist = !menulist;
                    linemenu.setVisibility(View.INVISIBLE);
@@ -68,27 +69,31 @@ public class MainActivity extends AppCompatActivity
 
         mapFragment.getMapAsync(this);
     }
+
+
+    public void btnEvent(String str){
+        toastmsg(str);
+        mode_btn.setText(str);
+        linemenu.setVisibility(View.INVISIBLE);
+        menulist= false;
+    }
+
+
     public void mapchangeButt(View v){
 
         switch(v.getId())
         {
             case R.id.hybrid:
-                toastmsg("hybrid");
                 myMap.setMapType(NaverMap.MapType.Hybrid);
-                mode_btn.setText("hybrid");
-                linemenu.setVisibility(View.INVISIBLE);
+                btnEvent("hybrid");
                 break;
             case R.id.satelite:
-                toastmsg("satelite");
                 myMap.setMapType(NaverMap.MapType.Satellite);
-                mode_btn.setText("satelite");
-                linemenu.setVisibility(View.INVISIBLE);
+                btnEvent("satellite");
                 break;
             case R.id.terrain:
-                toastmsg("terrain");
                 myMap.setMapType(NaverMap.MapType.Terrain);
-                mode_btn.setText("terrain");
-                linemenu.setVisibility(View.INVISIBLE);
+                btnEvent("terrain");
                 break;
             case R.id.cadastral:
                 clicked = !clicked;
@@ -112,7 +117,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         this.myMap = naverMap;
-
+        msg=Toast.makeText(this,"hybrid",Toast.LENGTH_SHORT);
+        msg.show();
         myMap.setMapType(NaverMap.MapType.Hybrid);
         LatLng coord1 = new LatLng(35.945378,126.682110);
 
