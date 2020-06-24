@@ -26,9 +26,12 @@ public class MainActivity extends AppCompatActivity
     private static final int LOCATION_PERMISSION_REQUEST_CODE=1000;
     private FusedLocationSource locationSource;
     private LinearLayout linemenu;
+    private Button mode_btn;
+
     private NaverMap myMap;
     Toast msg =null;
     private boolean clicked = false;
+    private boolean menulist=true;
 
 
 
@@ -48,6 +51,20 @@ public class MainActivity extends AppCompatActivity
 
 
         linemenu = (LinearLayout)findViewById(R.id.linelayer);
+        mode_btn = (Button)findViewById(R.id.mode);
+        mode_btn.setOnClickListener(new Button.OnClickListener(){
+           @Override
+           public void onClick(View view){
+               if(menulist) {
+                   menulist = !menulist;
+                   linemenu.setVisibility(View.INVISIBLE);
+               }
+               else{
+                   menulist = !menulist;
+                   linemenu.setVisibility(View.VISIBLE);
+               }
+           }
+        });
 
         mapFragment.getMapAsync(this);
     }
@@ -58,17 +75,20 @@ public class MainActivity extends AppCompatActivity
             case R.id.hybrid:
                 toastmsg("hybrid");
                 myMap.setMapType(NaverMap.MapType.Hybrid);
-
+                mode_btn.setText("hybrid");
+                linemenu.setVisibility(View.INVISIBLE);
                 break;
             case R.id.satelite:
                 toastmsg("satelite");
                 myMap.setMapType(NaverMap.MapType.Satellite);
-
+                mode_btn.setText("satelite");
+                linemenu.setVisibility(View.INVISIBLE);
                 break;
             case R.id.terrain:
                 toastmsg("terrain");
                 myMap.setMapType(NaverMap.MapType.Terrain);
-
+                mode_btn.setText("terrain");
+                linemenu.setVisibility(View.INVISIBLE);
                 break;
             case R.id.cadastral:
                 clicked = !clicked;
