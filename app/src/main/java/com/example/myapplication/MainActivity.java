@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity
         msg=Toast.makeText(this,str,Toast.LENGTH_SHORT);
         msg.show();
     }
+
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         this.myMap = naverMap;
