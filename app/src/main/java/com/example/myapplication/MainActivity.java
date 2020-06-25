@@ -24,6 +24,7 @@ import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.util.FusedLocationSource;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -177,7 +178,7 @@ public class MainActivity extends AppCompatActivity
             infowindow1.close();
             marker3.setPosition(point);
             marker3.setMap(myMap);
-            getAddress(point);
+            getAddres(point);
             infowindow1.open(marker3);
         });
 
@@ -203,7 +204,7 @@ public class MainActivity extends AppCompatActivity
 
 
     }
-    public void getAddress(LatLng point){
+    public void getAddres(LatLng point){
         Geocoder geocoder = new Geocoder(this);
         List<Address> list = null;
 
@@ -217,13 +218,16 @@ public class MainActivity extends AppCompatActivity
 
             addr = "";
         }
-        String[] addrarr = list.get(0).toString().split(",");
 
         if(list!=null){
+
             if(list.size()==0)
                 addr = "no address found";
-            else
+            else{
+                String[] addrarr = list.get(0).toString().split(",");
                 addr = addrarr[0].substring(addrarr[0].indexOf("\"")+1,addrarr[0].length()-2);
+            }
+
         }
     }
     @Override
