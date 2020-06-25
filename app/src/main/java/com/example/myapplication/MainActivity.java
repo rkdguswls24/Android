@@ -4,7 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -20,16 +23,19 @@ import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.util.FusedLocationSource;
 
+import java.io.IOException;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity
-    implements OnMapReadyCallback {
+        implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE=1000;
     private FusedLocationSource locationSource;
     private LinearLayout linemenu;
     private Button mode_btn;
-
     private NaverMap myMap;
     Toast msg =null;
+    private String addr = "";
     private boolean clicked = false;
     private boolean menulist=false;
 
@@ -54,17 +60,17 @@ public class MainActivity extends AppCompatActivity
         mode_btn = (Button)findViewById(R.id.mode);
         linemenu.setVisibility(View.INVISIBLE);
         mode_btn.setOnClickListener(new Button.OnClickListener(){
-           @Override
-           public void onClick(View v){
-               if(menulist) {
-                   menulist = !menulist;
-                   linemenu.setVisibility(View.INVISIBLE);
-               }
-               else{
-                   menulist = !menulist;
-                   linemenu.setVisibility(View.VISIBLE);
-               }
-           }
+            @Override
+            public void onClick(View v){
+                if(menulist) {
+                    menulist = !menulist;
+                    linemenu.setVisibility(View.INVISIBLE);
+                }
+                else{
+                    menulist = !menulist;
+                    linemenu.setVisibility(View.VISIBLE);
+                }
+            }
         });
 
         mapFragment.getMapAsync(this);
@@ -155,12 +161,24 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
+        InfoWindow infowindow1 = new InfoWindow();
+        infowindow1.setAdapter(new InfoWindow.DefaultTextAdapter(this){
+           @NonNull
+           @Override
+           public CharSequence getText(@NonNull InfoWindow infowindow1){
+               return addr;
+           }
+        });
 
 
 
         naverMap.setOnMapClickListener((coord, point) -> {
             infoWindow.close();
+            infowindow1.close();
+            marker3.setPosition(point);
+            marker3.setMap(myMap);
+            getAddress(point);
+            infowindow1.open(marker3);
         });
 
 // 마커를 클릭하면:
@@ -184,6 +202,29 @@ public class MainActivity extends AppCompatActivity
 
 
 
+    }
+    public void getAddress(LatLng point){
+        Geocoder geocoder = new Geocoder(this);
+        List<Address> list = null;
+
+        double d1 = point.latitude;
+        double d2 = point.longitude;
+        try{
+            list = geocoder.getFromLocation(
+                d1,d2,1);
+        }catch(IOException e){
+            e.printStackTrace();
+
+            addr = "";
+        }
+        String[] addrarr = list.get(0).toString().split(",");
+
+        if(list!=null){
+            if(list.size()==0)
+                addr = "no address found";
+            else
+                addr = addrarr[0].substring(addrarr[0].indexOf("\"")+1,addrarr[0].length()-2);
+        }
     }
     @Override
     public void onRequestPermissionsResult(int requestCode,
