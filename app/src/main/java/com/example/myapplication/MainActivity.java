@@ -26,6 +26,7 @@ import com.naver.maps.map.util.FusedLocationSource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 
 public class MainActivity extends AppCompatActivity
@@ -172,13 +173,22 @@ public class MainActivity extends AppCompatActivity
         });
 
 
-
+//지도를 클릭하면 해당 위치에 마커를 띄우고 주소정보창을 띄움
         naverMap.setOnMapClickListener((coord, point) -> {
             infoWindow.close();
             infowindow1.close();
             marker3.setPosition(point);
             marker3.setMap(myMap);
-            getAddres(point);
+
+            try {
+                addr = new GetAddress().execute(point).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Log.d("STATE",addr);
+            //getAddres(point);
             infowindow1.open(marker3);
         });
 
@@ -204,6 +214,7 @@ public class MainActivity extends AppCompatActivity
 
 
     }
+    //좌표값을 받아서 geocode로 주소를 생성;
     public void getAddres(LatLng point){
         Geocoder geocoder = new Geocoder(this);
         List<Address> list = null;
