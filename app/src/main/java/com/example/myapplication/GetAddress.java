@@ -62,32 +62,29 @@ public class GetAddress extends AsyncTask<LatLng,Void,String> {
                 builder.append(line+ "\n");
             }
             Log.d("STATE",builder.toString());
-            JSONArray jarray = new JSONObject(builder.toString()).getJSONArray("results");
+            String str = builder.toString();
+            JSONObject jobject = new JSONObject(str) ;
+            JSONArray jarray = jobject.getJSONArray("results");
             Log.d("STATE",jarray.get(0).toString());
-            for(int i = 0 ; i<jarray.length(); i++){
-                JSONObject jObject = jarray.getJSONObject(i);
-                /*String area1 = jObject.optString("area1");
-                String area2 = jObject.optString("area2");
-                String area3 = jObject.optString("area3");
-                JSONObject jobj= new JSONObject(area1);
-                JSONObject jobj2= new JSONObject(area2);
-                JSONObject jobj3= new JSONObject(area3);
-                result.append(jobj.getString("name"));
-                result.append(jobj2.getString("name"));
-                result.append(jobj3.getString("name"));*/
-                result.append(jObject.getString("name"));
+            JSONObject jobject2 = new JSONObject(jarray.get(0).toString());
+            Log.d("STATE",jobject2.getString("region"));
+            JSONObject jobject3 = new JSONObject(jobject2.getString("land"));
+            jobject2 = new JSONObject(jobject2.getString("region"));
+
+            Log.d("STATE",jobject3.toString());
+            for(int i=0;i<5;i++){
+                JSONObject extra = new JSONObject(jobject2.getString("area"+i));
+                result.append(extra.getString("name"));
+                result.append(" ");
             }
+            result.append(jobject3.getString("number1")+"-"+jobject3.getString("number2"));
+            Log.d("STATE",jobject2.getString("area"+0));
+
 
             Log.d("STATE",result.toString());
 
 
-           /* JsonParser jsonParser = new JsonParser();
-            JSONObject jObj = new JSONObject(builder.toString());
-            JSONArray jArray = (JSONArray) jObj.get("results");
-            Log.d("STATE",jArray.get(1).toString());
-            JSONObject jObj1 = new JSONObject(jArray.get(1).toString());
-            line = jObj1.getString("name");
-            Log.d("STATE",jArray.get(1).toString());*/
+
             return result.toString();
         }catch(MalformedURLException | ProtocolException exception) {
             exception.printStackTrace();
