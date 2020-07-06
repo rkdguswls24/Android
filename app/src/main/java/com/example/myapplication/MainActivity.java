@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity
     private String addr = "";
     private boolean clicked = false;
     private boolean menulist=false;
-
-
+    private ArrayList<Marker>  markers= new ArrayList<Marker>();
+    private boolean marker_mode = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +114,10 @@ public class MainActivity extends AppCompatActivity
                 myMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_CADASTRAL,clicked);
 
                 break;
+            case R.id.marker:
+                clearMarker();
+                marker_mode = !marker_mode;
+                break;
         }
     }
 
@@ -145,7 +149,7 @@ public class MainActivity extends AppCompatActivity
         marker1.setMap(myMap);
         marker2.setPosition(new LatLng(35.967509,126.736971));
         marker2.setMap(myMap);
-        marker3.setPosition(new LatLng(35.942719,126.726729));
+         marker3.setPosition(new LatLng(35.942719,126.726729));
         marker3.setMap(myMap);
 
 
@@ -154,7 +158,7 @@ public class MainActivity extends AppCompatActivity
         marker3.setTag("마커3");
 
         InfoWindow infoWindow = new InfoWindow();
-
+        //정보 창
         infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(this) {
             @NonNull
             @Override
@@ -177,8 +181,16 @@ public class MainActivity extends AppCompatActivity
         naverMap.setOnMapClickListener((coord, point) -> {
             infoWindow.close();
             infowindow1.close();
-            marker3.setPosition(point);
-            marker3.setMap(myMap);
+            if(marker_mode){
+                marker3.setPosition(point);
+                marker3.setMap(myMap);
+            }
+            else{
+                markers.add(addnewMarker(point)) ;
+            }
+
+            /*marker3.setPosition(point);
+            marker3.setMap(myMap);*/
 
             try {
                 addr = new GetAddress().execute(point).get();
@@ -190,6 +202,7 @@ public class MainActivity extends AppCompatActivity
             Log.d("STATE",addr);
             //getAddres(point);
             infowindow1.open(marker3);
+            Log.d("STATE", String.valueOf(markers.size()));
         });
 
 // 마커를 클릭하면:
@@ -198,10 +211,10 @@ public class MainActivity extends AppCompatActivity
 
             if (marker.getInfoWindow() == null) {
                 // 현재 마커에 정보 창이 열려있지 않을 경우 엶
-                infoWindow.open(marker);
+                infowindow1.open(marker);
             } else {
                 // 이미 현재 마커에 정보 창이 열려있을 경우 닫음
-                infoWindow.close();
+                infowindow1.close();
             }
 
             return true;
@@ -209,10 +222,22 @@ public class MainActivity extends AppCompatActivity
 
         marker1.setOnClickListener(listener);
         marker2.setOnClickListener(listener);
-        marker3.setOnClickListener(listener);
+        //markers.setOnClickListener(listener);
 
 
+    }
+    public Marker addnewMarker(LatLng point){
+        Marker newMarker = new Marker();
 
+        newMarker.setPosition(point);
+        newMarker.setMap(myMap);
+        return newMarker;
+    }
+    public void clearMarker(){
+        for(Marker m:markers){
+            m.setMap(null);
+        }
+        markers.clear();
     }
     //좌표값을 받아서 geocode로 주소를 생성;
     public void getAddres(LatLng point){

@@ -101,7 +101,6 @@ public class GetAddress extends AsyncTask<LatLng,Void,String> {
 
     }
     protected void onPostExecute(String result){
-        Marker mark1  = new Marker();
 
     }
     protected void onCancelled(){
