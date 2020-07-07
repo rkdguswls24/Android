@@ -56,7 +56,6 @@ public class GetAddress extends AsyncTask<LatLng,Void,String> {
             StringBuilder builder = new StringBuilder(); //문자열을 담기 위한 객체
             BufferedReader reader = new BufferedReader(new InputStreamReader(is,"UTF-8")); //문자열 셋 세팅
             String line;
-
             while ((line = reader.readLine()) != null) {
 
                 builder.append(line+ "\n");
@@ -64,8 +63,12 @@ public class GetAddress extends AsyncTask<LatLng,Void,String> {
             Log.d("STATE",builder.toString());
             String str = builder.toString();
             JSONObject jobject = new JSONObject(str) ;
+            JSONObject jcodeob = new JSONObject(jobject.getString("status"));
+            if(jcodeob.getInt("code")!=0)
+                return "no data";
             JSONArray jarray = jobject.getJSONArray("results");
             Log.d("STATE",jarray.get(0).toString());
+
             JSONObject jobject2 = new JSONObject(jarray.get(0).toString());
             Log.d("STATE",jobject2.getString("region"));
             JSONObject jobject3 = new JSONObject(jobject2.getString("land"));
