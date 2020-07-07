@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
+import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 
 import java.io.IOException;
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity
     private boolean menulist=false;
     private ArrayList<Marker>  markers= new ArrayList<Marker>();
     private boolean marker_mode = true;
+    private PolygonOverlay polygon = new PolygonOverlay();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +122,10 @@ public class MainActivity extends AppCompatActivity
                 clearMarker();
                 marker_mode = !marker_mode;
                 break;
+            case R.id.mapview:
+                Intent intent =new Intent(MainActivity.this,MapViewActivity.class);
+                startActivity(intent);
+                break;
         }
     }
 
@@ -184,25 +192,26 @@ public class MainActivity extends AppCompatActivity
             if(marker_mode){
                 marker3.setPosition(point);
                 marker3.setMap(myMap);
+                try {
+                    addr = new GetAddress().execute(point).get();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Log.d("STATE",addr);
+                //getAddres(point);
+                infowindow1.open(marker3);
+                Log.d("STATE", String.valueOf(markers.size()));
             }
             else{
+
                 markers.add(addnewMarker(point)) ;
             }
 
-            /*marker3.setPosition(point);
-            marker3.setMap(myMap);*/
+            if(markers.size()>3)
+                makeShape();
 
-            try {
-                addr = new GetAddress().execute(point).get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            Log.d("STATE",addr);
-            //getAddres(point);
-            infowindow1.open(marker3);
-            Log.d("STATE", String.valueOf(markers.size()));
         });
 
 // 마커를 클릭하면:
@@ -226,6 +235,17 @@ public class MainActivity extends AppCompatActivity
 
 
     }
+    //새로운 마커로 폴리곤 셰이프 생성
+    public void makeShape(){
+        ArrayList<LatLng> marker_pos = new ArrayList<LatLng>();
+        for(Marker x:markers){
+            marker_pos.add(x.getPosition());
+        }
+
+        polygon.setCoords(marker_pos);
+        polygon.setMap(myMap);
+    }
+    //좌표값을 받으면 새로운 마커를 생성
     public Marker addnewMarker(LatLng point){
         Marker newMarker = new Marker();
 
@@ -238,6 +258,7 @@ public class MainActivity extends AppCompatActivity
             m.setMap(null);
         }
         markers.clear();
+        polygon.setMap(null);
     }
     //좌표값을 받아서 geocode로 주소를 생성;
     public void getAddres(LatLng point){
